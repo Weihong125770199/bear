@@ -5,7 +5,7 @@ dataSet = [[1,1,'yes'],
            [1,0,'no' ],
            [0,1,'no' ],
            [0,1,'no' ]]
-labels = ["No surfacing","Flippers"]
+labels = ['No surfacing','Flippers']
 shnnonEnt = Sn.calcShannonEnt(dataSet)
 #print shnnonEnt
 
@@ -25,3 +25,5 @@ treeDepth = tp.getTreeDepth(myTree)
 print(leaveNum)
 print(treeDepth)
 tp.createPlot(myTree)
+result = tp.classify(myTree,labels,[1,1])
+print result
