@@ -1,4 +1,5 @@
 from math import log
+import matplotlib.pyplot as plt
 import operator
 def calcShannonEnt(dataSet):
     numEntries = len(dataSet)

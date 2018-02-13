@@ -1,4 +1,5 @@
 import Shannon as Sn
+import treePlotter as tp
 dataSet = [[1,1,'yes'],
            [1,1,'yes'],
            [1,0,'no' ],
@@ -17,3 +18,10 @@ bestFeature = Sn.chooseBestFeatureToSplit(dataSet)
 
 myTree = Sn.createTree(dataSet,labels)
 print myTree
+
+leaveNum = tp.getNumLeafs(myTree)
+treeDepth = tp.getTreeDepth(myTree)
+
+print(leaveNum)
+print(treeDepth)
+tp.createPlot(myTree)
