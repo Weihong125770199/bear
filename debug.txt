@@ -1,0 +1,98 @@
+#include <linux/blkdev.h>
+show_stack(NULL,NUL)
+Log.e(TAG,Log.getStackTraceString(new Throwable()));
+	
+printk("%s: debug line:%d \n", __func__, __LINE__);
+
+
+#include <utils/CallStack.h>
+
+android::CallStack stack;
+
+
+   stack.update(1,100);
+    stack.log("weihong",ANDROID_LOG_DEBUG,"audioflinger");
+
+c 
+LOCAL_SHARED_LIBRARIES 加入 libutils
+src 中加入callstack.cpp
+调用的C文件加入#include "callstack.h"
+使用的地方加入
+   dumping_callstack();
+
+
+	cd kernel_imx
+ ../prebuilts/gcc/linux-x86/arm/arm-eabi-4.7/bin/arm-eabi-gdb vmlinux
+
+	
+	~/v8platform/v8platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.6/bin/arm-eabi-addr2line -f -e ~/v8platform/v8platform/out/target/product/v8auto_6q/symbols/system/lib/hw/audio_policy.default.so  0000e260 
+kernel debug:
+CONFIG_KALLSYMS=y
+
+CONFIG_KALLSYMS=y
+CONFIG_KALLSYMS_ALL=y
+CONFIG_DEBUG_INFO=y
+
+
+
+
+dump pcm:
+#define DUMP_PATCH   "/data/dump.pcm"
+FILE * gdumpFd = NULL;
+static int is_open = 0;
+static int dump_open(char* path) {
+    gdumpFd = fopen(path, "ab+");
+    if (gdumpFd == NULL) {
+             ALOGE("weihong-->open fail  error \n");
+		fclose(gdumpFd);	 
+		   return 0;
+       }
+      else
+      	{
+               ALOGE("weihong-->open successful \n");
+		    return 1;
+	 }
+ 
+}
+
+
+main.c
+
+     if(gdumpFd == NULL)
+   	{
+         is_open = dump_open(DUMP_PATCH);
+       }
+   
+   if (is_open  == 1)
+   	{
+   	write_length = fwrite(buffer, 1, bytes,gdumpFd);
+	printf("write_length = %d\n", write_length);
+   	}
+       else
+       {
+
+		   ALOGE("weihong -- file have not yet open\n");  
+       }
+	   
+	   
+System.setProperty("https.proxyPort", Integer.toString(server.getPort()));
+
+
+   Thread t = new Thread() {
+                @Override public void run() {
+                   
+                }
+            };
+        t.start();
+
+
+/system/bin/mxc-v4l2-tvin -iw 720 -ih 480 -ow 1024 -oh 600 -m 2
+
+#include <syslog.h>
+ syslog(LOG_INFO ,"weihong ----->%s\n",buf+i);
+ 
+ echo 1 > /sys/devices/virtual/graphics/fb0/dump
+ 
+ BUSNUM
+ 
+ DEVPATH=/devices/platform/ac_usb/musb-hdrc.0.auto/usb1/
