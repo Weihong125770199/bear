@@ -1,0 +1,6 @@
+sudo pip install pandas   
+sudo apt-get  install libxml2-dev libxslt-dev
+sudo pip install lxml   
+sudo pip install bs4
+sudo pip install openpyxl
+sudo pip install tushare  
