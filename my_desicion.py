@@ -90,8 +90,12 @@ for code in np.array(result_select.index):
 
                                 result_select.ix[str(code),'price-values'] = \
                              result_select.ix[str(code),'touzhijiazhi'] /result_select.ix[str(code),'last_day_price']
+                                if result_select.ix[str(code),'pe'] == 0:
+                                   result_select.ix[str(code),'pe'] = result_select.ix[str(code),'mean-pe']
                                 result_select.ix[str(code),'pray-values'] = \
-                             result_select.ix[str(code),'price-values'] * result_select.ix[str(code),'npr']/100.0
+                             result_select.ix[str(code),'price-values'] * result_select.ix[str(code),'npr']/100.0 \
+                             *result_select.ix[str(code),'mean-pe'] /result_select.ix[str(code),'pe'] \
+                             *hist_data['close'].mean()/result_select.ix[str(code),'last_day_price']
 
     
 #result_select = result[result['type'].isin([u'\u9884\u5347'])]
