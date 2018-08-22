@@ -3,10 +3,14 @@
 
 import urllib
 import urllib2
+import re
 from bs4 import BeautifulSoup
+import numpy as np
+import pandas as pd
+#url ='http://query.sse.com.cn/infodisplay/queryBltnBookInfo.do?jsonCallBack=jsonpCallback55433&isPagination=true&isNew=1&bulletintype=L013&publishYear=2018&cmpCode=603611&startTime=&sortName=companyCode&direction=asc&pageHelp.pageSize=25&pageHelp.pageCount=50&pageHelp.pageNo=1&pageHelp.beginPage=1&pageHelp.cacheSize=1&pageHelp.endPage=5&_=1532675386426'
 
-url ='http://query.sse.com.cn/infodisplay/queryBltnBookInfo.do?jsonCallBack=jsonpCallback55433&isPagination=true&isNew=1&bulletintype=L013&publishYear=2018&cmpCode=603611&startTime=&sortName=companyCode&direction=asc&pageHelp.pageSize=25&pageHelp.pageCount=50&pageHelp.pageNo=1&pageHelp.beginPage=1&pageHelp.cacheSize=1&pageHelp.endPage=5&_=1532675386426'
 
+url ='http://query.sse.com.cn/infodisplay/queryBltnBookInfo.do?jsonCallBack=jsonpCallback55433&isNew=1&publishYear=2018'
 #url ='https://query.sse.com.cn/infodisplay/'
 
 headers = { 
@@ -20,17 +24,34 @@ headers = {
 }
 #values = {'inputCode':'000063'}
 #pos_data = urllib.urlencode(values)
+
+def my_save(filename,contents):
+    fh=open(filename,'w')
+    fh.write(contents)
+    fh.close()
  
 request = urllib2.Request(url,headers = headers)
 page = urllib2.urlopen(request)
 #page.encoding = 'utf-8'
 soup = BeautifulSoup(page,"lxml")
-html= soup.prettify()
+html = soup.select('p')
+string1 = str(html[0])
+string2 = string1.split('ROWNUM_')
+df=pd.DataFrame(columns=['Name','code','type','publishDate0','actualDate'])
+for string in string2:
+    name= re.findall(r'companyAbbr":"(.+?)","',string)
+    code= re.findall(r'companyCode":"(.+?)","',string)
+    report_type= re.findall(r'bulletinType":"(.+?)","',string)
+    date = re.findall(r'publishDate0":"(.+?)","',string)
+    actual =  re.findall(r'actualDate":"(.+?)","',string)
+    if len(actual) == 0:
+    	df=df.append(pd.DataFrame({'Name':name,'code':code,'type':report_type,'publishDate0':date}),ignore_index=True)
+    else:
+        df=df.append(pd.DataFrame({'Name':name,'code':code,'type':report_type,'publishDate0':date,'actualDate':actual}),ignore_index=True)
+    #result = 'name:'+ str(name) +'code :'+str(code) + 'type :'+ str(report_type) + 'date :' + str(date)
+    #print result
 
+df.to_excel('ready_to_report.xlsx')
 
-print html
-html=html.encode("utf-8")
-with open('testi2.html','wb') as f:
-     f.write(html)
 
 #print(response.read())
