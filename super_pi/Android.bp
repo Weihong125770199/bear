@@ -1,0 +1,15 @@
+cc_binary {
+    name: "super_pi",
+    srcs: ["pi_fftcs.c",
+           "fftsg_h.c",
+           ],
+    cflags: [
+        "-W",
+        "-pie",
+        "-fPIE",
+    ],
+
+   
+
+}
+

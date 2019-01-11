@@ -96,3 +96,31 @@ System.setProperty("https.proxyPort", Integer.toString(server.getPort()));
  BUSNUM
  
  DEVPATH=/devices/platform/ac_usb/musb-hdrc.0.auto/usb1/
+
+
+
+
+add for get pid info:
+
+#include <linux/sched.h>
+
+static inline uid_t get_user_uid(void) {
+   
+ return task_pid_nr(current);
+
+}
+
+static char tcomm[100];
+static void get_user_comm( void)
+{
+   get_task_comm(tcomm, current);
+
+
+}
+
+##################
+ get_user_comm();
+ printk(KERN_ERR"weihong --- sync file get-user pid =%u comm=%s \n",get_user_uid(),tcomm);
+##################
+
+
