@@ -1,0 +1,7 @@
+
+cc_binary {
+    name: "v4l2_test",
+    srcs: [
+        "v4l2_test.c",
+    ],
+}
