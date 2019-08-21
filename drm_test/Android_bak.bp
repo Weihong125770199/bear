@@ -1,0 +1,19 @@
+
+cc_binary {
+    name: "drm_test",
+    srcs: [
+        "modeset-double-buffered.c",
+    ],
+    shared_libs: [
+        "libdrm",
+    ],
+    include_dirs: [
+        "external/libdrm",
+        "external/libdrm/include/drm",
+        "system/core/include/utils",
+        "system/core/libsync",
+        "system/core/libsync/include",
+    ],
+   
+}
+
