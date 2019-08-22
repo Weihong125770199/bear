@@ -142,9 +142,9 @@ static int diff_image( unsigned char *old_buffer, unsigned char *new_buffer,unsi
  int i=0;
  for(i=0;i< w*h;i++)
  {
-  *(result_buffer+3*i) = *(new_buffer+3*i) - *(old_buffer+3*i);
-  *(result_buffer+3*i+1) = *(new_buffer+3*i+1) - *(old_buffer+3*i+1);
-  *(result_buffer+3*i+2) = *(new_buffer+3*i+2) - *(old_buffer+3*i+2);
+  *(result_buffer+3*i) = abs(*(new_buffer+3*i) - *(old_buffer+3*i));
+  *(result_buffer+3*i+1) = abs(*(new_buffer+3*i+1) - *(old_buffer+3*i+1));
+  *(result_buffer+3*i+2) = abs(*(new_buffer+3*i+2) - *(old_buffer+3*i+2));
 
  }
   
@@ -154,6 +154,26 @@ static int diff_image( unsigned char *old_buffer, unsigned char *new_buffer,unsi
  
  
 }
+
+//输入YUV422I buffer数据，输出RGB buffer数据；
+static int merge_image( unsigned char *top_buffer, unsigned char *bottom_buffer,unsigned char *result_buffer,int w, int h)
+{
+
+ int i=0;
+ for(i=0;i< h;i++)
+ {
+  memcpy(result_buffer+2*i*3*w,top_buffer+i*3*w,3*w);
+  memcpy(result_buffer+(2*i+1)*3*w,bottom_buffer+i*3*w,3*w);
+
+ }
+  
+ 
+ return 0;
+ 
+ 
+ 
+}
+
 
 
 
@@ -226,15 +246,6 @@ static char *print_fourcc(__u32 fmt)
 
         return code;
 }
-
-
-
-
-
-
-
-
-
 
 
 drmModeConnector* FindConnector(int fd)
@@ -455,6 +466,9 @@ int main(int argc, char *argv[])
   unsigned char *image_rgb;
   unsigned char *old_rgb;
   unsigned char *result_rgb;
+  unsigned char *diff_result_rgb;
+  unsigned char *top_rgb;
+  unsigned char *top_rgb_no_color;
   sprintf(video_path,"/dev/video%s",argv[1]);
   printf("opening %s \n",video_path);
   int viedo_fd = open(video_path,O_RDWR);
@@ -474,18 +488,19 @@ int main(int argc, char *argv[])
   struct v4l2_format fmt;
   fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
   ioctl(viedo_fd,VIDIOC_G_FMT,&fmt);
-  printf("TK----------->>>>>fmt.fmt.width is %d\nfmt.fmt.pix.height is %d\nfmt.fmt.pix.colorspace is %d  fmt.fmt.pix.pixelformat=%s\n",fmt.fmt.pix.width,fmt.fmt.pix.height,fmt.fmt.pix.colorspace,print_fourcc(fmt.fmt.pix.pixelformat));
+  printf("TK----------->>>>>fmt.fmt.width is %d\nfmt.fmt.pix.height is %d\nfmt.fmt.pix.colorspace is %d  fmt.fmt.pix.pixelformat=%s fmt.fmt.pix.field =%d \n",fmt.fmt.pix.width,fmt.fmt.pix.height,fmt.fmt.pix.colorspace,print_fourcc(fmt.fmt.pix.pixelformat),fmt.fmt.pix.field);
 
   /////
 #if 0
-  fmt.fmt.pix.height =480;
-  fmt.fmt.pix.pixelformat= V4L2_PIX_FMT_RGB24;
+  //fmt.fmt.pix.height =480;
+  //fmt.fmt.pix.pixelformat= V4L2_PIX_FMT_RGB24;
+  fmt.fmt.pix.field= V4L2_FIELD_TOP;
   ret=ioctl(viedo_fd,VIDIOC_S_FMT,&fmt);
   printf("TK----------->>>>> set fmt,ret=%d \n",ret);
 
   ioctl(viedo_fd,VIDIOC_G_FMT,&fmt);
-  printf("TK----------->>>>>after set fmt.fmt.width is %d\nfmt.fmt.pix.height is %d\nfmt.fmt.pix.colorspace is %d  fmt.fmt.pix.pixelformat=%s\n",fmt.fmt
-.pix.width,fmt.fmt.pix.height,fmt.fmt.pix.colorspace,print_fourcc(fmt.fmt.pix.pixelformat));
+  printf("TK----------->>>>>after set fmt.fmt.width is %d\nfmt.fmt.pix.height is %d\nfmt.fmt.pix.colorspace is %d  fmt.fmt.pix.pixelformat=%s  fmt.fmt.pix.field =%d \n",fmt.fmt
+.pix.width,fmt.fmt.pix.height,fmt.fmt.pix.colorspace,print_fourcc(fmt.fmt.pix.pixelformat),fmt.fmt.pix.field);
 
 #endif
   x=fmt.fmt.pix.width;
@@ -549,9 +564,12 @@ int main(int argc, char *argv[])
   ////
 #endif
 
- image_rgb=malloc(x*y*3+54);
- old_rgb=malloc(x*y*3);
- result_rgb = malloc(x*y*3);
+ image_rgb=malloc(x*y*3);
+ top_rgb=malloc(x*y*3);
+ top_rgb_no_color=malloc(x*y*3);
+ old_rgb=malloc(x*y*3*2);
+ result_rgb = malloc(x*y*3*2);
+ diff_result_rgb = malloc(x*y*3*2);
 while(1)
 {
 
@@ -579,34 +597,37 @@ for(i = 0; i < 4; i++){
   //image_rgb=malloc(x*y*3+54);
   //old_rgb=malloc(x*y*3);
   //result_rgb = malloc(x*y*3);
-  memset(image_rgb,0x0,x*y*3+54);
-  memcpy(image_rgb,bmp_p,sizeof(BMPFILEHEADER));
+  memset(image_rgb,0x0,x*y*3);
+  printf("index=%d,filed=%d,sequence=%d \n",i,v4l2_buf.field,v4l2_buf.sequence);
   //YV12ToBGR24_Native(buffers[v4l2_buf.index].start,image_rgb+54,x,y);
   //YCbCrToRGB24_Native(buffers[v4l2_buf.index].start,image_rgb+54,x,y);
-  if(current_fmt == V4L2_PIX_FMT_YUYV )
+  if(current_fmt == V4L2_PIX_FMT_YUYV && (v4l2_buf.field ==  V4L2_FIELD_BOTTOM ) )
   {
-    YUYV422ToRGB888(buffers[v4l2_buf.index].start,image_rgb+54,x,y);
-    SetColor(buf, stride, width, height,image_rgb+54,x,y,0,0);
-    YUYV422ToRGB888_no_color(buffers[v4l2_buf.index].start,image_rgb+54,x,y);
-    SetColor(buf, stride, width, height,image_rgb+54,x,y,x+1,0);
+    YUYV422ToRGB888(buffers[v4l2_buf.index].start,image_rgb,x,y);
+    merge_image(top_rgb,image_rgb,result_rgb,x,y); 
+    SetColor(buf, stride, width, height,result_rgb,x,2*y,0,0);
+    YUYV422ToRGB888_no_color(buffers[v4l2_buf.index].start,image_rgb,x,y);
+    merge_image(top_rgb_no_color,image_rgb,result_rgb,x,y);
+    SetColor(buf, stride, width, height,result_rgb,x,2*y,x+1,0);
    //weihong
-    diff_image(old_rgb,image_rgb+54,result_rgb,x,y);
-    memcpy(old_rgb,image_rgb+54,x*y*3);
-    SetColor(buf, stride, width, height,result_rgb,x,y,0,y+1);
+    diff_image(old_rgb,result_rgb,diff_result_rgb,x,2*y);
+    memcpy(old_rgb,result_rgb,x*y*3*2);
+    SetColor(buf, stride, width, height,diff_result_rgb,x,2*y,0,2*y+1);
  
     drmModePageFlip(fd, crtcid, framebuffer, DRM_MODE_PAGE_FLIP_EVENT, 0);
     
     //getchar();
-  } else if(current_fmt == V4L2_PIX_FMT_RGB24 )
+  } else if( current_fmt == V4L2_PIX_FMT_YUYV && (v4l2_buf.field ==  V4L2_FIELD_TOP) )
   {
-     RGB888ToRGB888(buffers[v4l2_buf.index].start,image_rgb+54,x,y);
+       YUYV422ToRGB888(buffers[v4l2_buf.index].start,top_rgb,x,y);
+       YUYV422ToRGB888_no_color(buffers[v4l2_buf.index].start,top_rgb_no_color,x,y);
   }
  
   //free(image_rgb);
   
   ////
   }
-  getchar();
+  //getchar();
 }
   getchar();
   //free(bmp_p);
