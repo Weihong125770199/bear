@@ -1,0 +1,50 @@
+<ROOT ID="12345">
+<cmd ID="0" cmd="please send !" response="RCAR3_IMAGE\1cs_2x2G.mot" type="1">NODETEXTS</cmd>
+<cmd ID="1" cmd="Flash writer for R-Car H3/M3/M3N" response="em_e" type="0">NODETEXTS</cmd>
+<cmd ID="2" cmd="Select area(0-2)" response="0" type="0">NODETEXTS</cmd>
+<cmd ID="3" cmd="EM_E Complete" response="em_e" type="0">NODETEXTS</cmd>
+<cmd ID="4" cmd="Select area(0-2)" response="1" type="0">NODETEXTS</cmd>
+<cmd ID="5" cmd="EM_E Complete" response="em_e" type="0">NODETEXTS</cmd>
+<cmd ID="6" cmd="Select area(0-2)" response="2" type="0">NODETEXTS</cmd>
+<cmd ID="7" cmd="EM_E Complete" response="sup" type="0">NODETEXTS</cmd>
+<cmd ID="8" cmd="Please change to 921.6Kbps baud rate setting of the terminal" response="em_w" type="2">NODETEXTS</cmd>
+<cmd ID="9" cmd="Select area(0-2)" response="1" type="0">NODETEXTS</cmd>
+<cmd ID="10" cmd="Please Input Start Address in sector" response="000000" type="0">NODETEXTS</cmd>
+<cmd ID="11" cmd="Please Input Program Start Address" response="E6320000" type="0">NODETEXTS</cmd>
+<cmd ID="12" cmd="please send !" response="RCAR3_IMAGE\bootparam_sa0_hf.srec" type="1">NODETEXTS</cmd>
+<cmd ID="13" cmd="EM_W Complete!" response="em_w" type="0">NODETEXTS</cmd>
+<cmd ID="14" cmd="Select area(0-2)" response="1" type="0">NODETEXTS</cmd>
+<cmd ID="15" cmd="Please Input Start Address in sector" response="00001E" type="0">NODETEXTS</cmd>
+<cmd ID="16" cmd="Please Input Program Start Address" response="E6304000" type="0">NODETEXTS</cmd>
+<cmd ID="17" cmd="please send !" response="RCAR3_IMAGE\bl2_hf.srec" type="1">NODETEXTS</cmd>
+<cmd ID="18" cmd="EM_W Complete!" response="em_w" type="0">NODETEXTS</cmd>
+<cmd ID="19" cmd="Select area(0-2)" response="1" type="0">NODETEXTS</cmd>
+<cmd ID="20" cmd="Please Input Start Address in sector" response="000180" type="0">NODETEXTS</cmd>
+<cmd ID="21" cmd="Please Input Program Start Address" response="E6320000" type="0">NODETEXTS</cmd>
+<cmd ID="22" cmd="please send !" response="RCAR3_IMAGE\cert_header_sa6.srec" type="1">NODETEXTS</cmd>
+<cmd ID="23" cmd="EM_W Complete!" response="em_w" type="0">NODETEXTS</cmd>
+<cmd ID="24" cmd="Select area(0-2)" response="1" type="0">NODETEXTS</cmd>
+<cmd ID="25" cmd="Please Input Start Address in sector" response="000200" type="0">NODETEXTS</cmd>
+<cmd ID="26" cmd="Please Input Program Start Address" response="44000000" type="0">NODETEXTS</cmd>
+<cmd ID="27" cmd="please send !" response="RCAR3_IMAGE\bl31_hf.srec" type="1">NODETEXTS</cmd>
+<cmd ID="28" cmd="EM_W Complete!" response="em_w" type="0">NODETEXTS</cmd>
+<cmd ID="29" cmd="Select area(0-2)" response="1" type="0">NODETEXTS</cmd>
+<cmd ID="30" cmd="Please Input Start Address in sector" response="000400" type="0">NODETEXTS</cmd>
+<cmd ID="31" cmd="Please Input Program Start Address" response="44100000" type="0">NODETEXTS</cmd>
+<cmd ID="32" cmd="please send !" response="RCAR3_IMAGE\tee_hf.srec" type="1">NODETEXTS</cmd>
+<cmd ID="33" cmd="EM_W Complete!" response="em_w" type="0">NODETEXTS</cmd>
+<cmd ID="34" cmd="Select area(0-2)" response="1" type="0">NODETEXTS</cmd>
+<cmd ID="35" cmd="Please Input Start Address in sector" response="001000" type="0">NODETEXTS</cmd>
+<cmd ID="36" cmd="Please Input Program Start Address" response="50000000" type="0">NODETEXTS</cmd>
+<cmd ID="37" cmd="please send !" response="RCAR3_IMAGE\u-boot-elf_hf.srec" type="1">NODETEXTS</cmd>
+<cmd ID="38" cmd="EM_W Complete!" response="em_secsd" type="0">NODETEXTS</cmd>
+<cmd ID="39" cmd="Please Input EXT_CSD Index(H'00 - H'1FF)" response="b3" type="0">NODETEXTS</cmd>
+<cmd ID="40" cmd="Please Input Value(H'00 - H'FF)" response="8" type="0">NODETEXTS</cmd>
+<cmd ID="41" cmd="EXT_CSD[B3] = 0x08" response="em_secsd" type="0">NODETEXTS</cmd>
+<cmd ID="42" cmd="Please Input EXT_CSD Index(H'00 - H'1FF)" response="b1" type="0">NODETEXTS</cmd>
+<cmd ID="43" cmd="Please Input Value(H'00 - H'FF)" response="a" type="0">NODETEXTS</cmd>
+<cmd ID="44" cmd="&gt;" response="请将车机拨到emmc启动模式并断电重启开发板!!!" type="2">NODETEXTS</cmd>
+<cmd ID="45" cmd="Hit any key to stop autoboot" response="T" type="0">NODETEXTS</cmd>
+<cmd ID="46" cmd="=&gt;" response="fastboot" type="0">NODETEXTS</cmd>
+<cmd ID="47" cmd="R-CAR3-USBHS probed" response="串口烧录完成" type="3">NODETEXTS</cmd>
+</ROOT>
