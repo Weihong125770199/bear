@@ -1,0 +1,67 @@
+从flash中将设备树读入内存，在启动内核时，把设备树所在的地址写到r2寄存器中就可以了。
+
+a. u-boot中内核启动命令:
+
+   bootm <uImage_addr>                            // 无设备树,bootm 0x30007FC0
+
+   bootm <uImage_addr> <initrd_addr> <dtb_addr>   // 有设备树
+
+   比如 :
+
+   nand read.jffs2 0x30007FC0 kernel;     // 读内核uImage到内存0x30007FC0
+
+   nand read.jffs2 32000000 device_tree;  // 读dtb到内存32000000
+
+   bootm 0x30007FC0 - 0x32000000          // 启动, 没有initrd时对应参数写为"-"
+
+b. bootm命令怎么把dtb_addr写入r2寄存器传给内核?
+
+   ARM程序调用规则(ATPCS)
+
+      c_function(p0, p1, p2) // p0 => r0, p1 => r1, p2 => r2
+
+      定义函数指针 the_kernel, 指向内核的启动地址,
+
+      然后执行: the_kernel(0, machine_id, 0x32000000);
+
+c. dtb_addr 可以随便选吗?
+
+   c.1 不要破坏u-boot本身
+
+   c.2 不要挡内核的路:
+
+　　　　 内核本身的空间不能占用, 内核要用到的内存区域也不能占用
+
+               内核启动时一般会在它所处位置的下边放置页表, 这块空间(一般是0x4000即16K字节)不能被占用
+
+  JZ2440内存使用情况:
+
+
+
+ 
+
+ 命令示例:
+
+a. 可以启动:
+
+nand read.jffs2 30000000 device_tree
+
+nand read.jffs2 0x30007FC0 kernel
+
+bootm 0x30007FC0 - 30000000
+
+b. 不可以启动: 内核启动时会使用0x30004000的内存来存放页表，dtb会被破坏
+
+nand read.jffs2 30004000 device_tree
+
+nand read.jffs2 0x30007FC0 kernel
+
+bootm 0x30007FC0 - 30004000
+
+a. u-boot中内核启动命令:   bootm <uImage_addr>                            // 无设备树,bootm 0x30007FC0   bootm <uImage_addr> <initrd_addr> <dtb_addr>   // 有设备树      比如 :   nand read.jffs2 0x30007FC0 kernel;     // 读内核uImage到内存0x30007FC0   nand read.jffs2 32000000 device_tree;  // 读dtb到内存32000000   bootm 0x30007FC0 - 0x32000000          // 启动, 没有initrd时对应参数写为"-"
+b. bootm命令怎么把dtb_addr写入r2寄存器传给内核?   ARM程序调用规则(ATPCS)         c_function(p0, p1, p2) // p0 => r0, p1 => r1, p2 => r2            定义函数指针 the_kernel, 指向内核的启动地址,      然后执行: the_kernel(0, machine_id, 0x32000000);      
+c. dtb_addr 可以随便选吗?   c.1 不要破坏u-boot本身   c.2 不要挡内核的路: 内核本身的空间不能占用, 内核要用到的内存区域也不能占用                       内核启动时一般会在它所处位置的下边放置页表, 这块空间(一般是0x4000即16K字节)不能被占用     JZ2440内存使用情况:                     ------------------------------  0x33f80000       ->|    u-boot                  |                     ------------------------------                     |    u-boot所使用的内存(栈等)|                     ------------------------------                     |                            |                     |                            |                     |        空闲区域            |                     |                            |                     |                            |                     |                            |                     |                            |                     ------------------------------  0x30008000       ->|      zImage                |                     ------------------------------  uImage = 64字节的头部+zImage  0x30007FC0       ->|      uImage头部            |                     ------------------------------  0x30004000       ->|      内核创建的页表        |  head.S                     ------------------------------                     |                            |                     |                            |              -----> ------------------------------              |              |              --- (内存基址 0x30000000)
+
+命令示例:a. 可以启动:nand read.jffs2 30000000 device_treenand read.jffs2 0x30007FC0 kernelbootm 0x30007FC0 - 30000000
+b. 不可以启动: 内核启动时会使用0x30004000的内存来存放页表，dtb会被破坏nand read.jffs2 30004000 device_treenand read.jffs2 0x30007FC0 kernelbootm 0x30007FC0 - 30004000
+
