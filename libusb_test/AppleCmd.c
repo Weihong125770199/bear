@@ -49,16 +49,27 @@ int do_roleswitch(void){
 		return -1;
 	}
 
+        ret= libusb_set_configuration(handle, 1);
+	if(ret ==0 )
+	{
+	  printf("set config#1 successful \n");
+	  while(1);
+	
+	}else
+	{
+	  printf("set config#2 fail ret=%d \n",ret);
+	}
+
 	dev = libusb_get_device(handle);
 	
 	printf("\nReading first configuration descriptor:\n");
-	libusb_get_config_descriptor(dev, 0, &conf_desc);
+	libusb_get_config_descriptor(dev, 2, &conf_desc);
 	nb_ifaces = conf_desc->bNumInterfaces;
 	printf("             nb interfaces: %d\n", nb_ifaces);
 	
 	libusb_free_config_descriptor(conf_desc);
 	
-	if(libusb_detach_kernel_driver(handle, 0)<0)
+	if(libusb_detach_kernel_driver(handle, 2)<0)
 	{
 		printf("Fail to libusb_detach_kernel_driver\n");
 	}
