@@ -1,0 +1,9 @@
+package vendor.mediatek.hardware.screen@1.0;
+ 
+interface IScreenCallBack
+{
+ 
+ oneway onNotify(int32_t process);
+
+};
+ 

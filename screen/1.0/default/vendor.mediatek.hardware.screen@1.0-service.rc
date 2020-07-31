@@ -1,0 +1,4 @@
+service screen-hal-1-0 /vendor/bin/hw/vendor.mediatek.hardware.screen@1.0-service
+    class hal
+    user system
+    group system sdcard_rw usb

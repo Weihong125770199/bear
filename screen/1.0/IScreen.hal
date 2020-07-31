@@ -1,0 +1,16 @@
+package vendor.mediatek.hardware.screen@1.0;
+import IScreenCallBack; 
+interface IScreen
+{
+  //get led status 
+  get() generates (IapStatus result);
+  init() ;
+  release() ;
+  setCallback(IScreenCallBack callback);
+  upgrade(string path ,UpdateType type) generates (Status result,int32_t process);  
+  beginCalibration() generates(bool success);
+  //resverved
+  set(IapStatus  val) generates(int32_t  ret);
+  tpDuanluzijian() generates(Status status,int32_t result);
+};
+ 

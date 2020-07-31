@@ -1,0 +1,37 @@
+package vendor.mediatek.hardware.screen@1.0;
+ 
+ 
+enum IapStatus : uint32_t {
+	IAP_GOT_IAP_COMMAND,
+	IAP_READY,
+        IAP_DOING,
+        IAP_DONE,
+        IAP_FAIL,
+        IAP_FASH_ERR,
+        IAP_NO_IAP_FOR_TEMP,
+        IAP_COMMNICATION_ERR,
+        IAP_DATA_ERR,
+        IAP_CHECKSUM_ERR,
+        IAP_PASSWORD_ERR,
+        IAP_PRODUCTION_ID_ERR,
+        IAP_ENTER_IAP_FAIL,
+        IAP_ENTER_USER_APP_FAIL,	
+};
+
+
+enum Status : uint32_t {
+        SUCCESSFUL,
+        FAIL,
+        TIME_OUT,
+}; 
+ 
+struct BrightnessRange {
+    uint32_t min;
+ 
+    uint32_t max;
+};
+
+enum UpdateType : uint32_t {
+        FIRMWARE_MCU,
+        FIRMWARE_TOUCH,
+};
