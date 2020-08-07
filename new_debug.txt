@@ -1,0 +1,83 @@
+1.Java中：
+Log.e(“dump_test”,Log.getStackTraceString(new Throwable()));
+ 
+2.C++中:
+ <1>.test.cpp
+  #include <utils/Log.h>
+  #include <utils/CallStack.h>
+  void dumping_callstack(){
+   android::CallStack stack;
+   //getpid()和gettid()效果一样
+   //stack.update(2,getpid());
+   //stack.update(2,gettid());
+ 
+  stack.update();
+  //输出到printf
+  stack.dump(1);
+  //输出到logcat
+  stack.log("dump_test");
+  //可以设置第2、3个参数
+  //stack.log("Dumping Stack",ANDROID_LOG_ERROR ,"123 ");
+}
+ 
+void func1(){
+  dumping_callstack();
+}
+ 
+void func2(){
+ 
+  func1();
+}
+ 
+void func3(){
+ 
+  func2();
+}
+int main(){
+  ALOGE("main_test------------------>");
+ 
+  func3();
+}
+ 
+ <2>.Android.mk
+  LOCAL_PATH := $(call my-dir)
+  include $(CLEAR_VARS)
+  LOCAL_SRC_FILES := test.cpp
+  LOCAL_MODULE_TAGS := optional
+  LOCAL_MODULE := test
+  LOCAL_SHARED_LIBRARIES += libcutils libutils
+  include $(BUILD_EXECUTABLE)
+ 
+3.C中：
+ <1>.创建callstack.cpp
+   #include <utils/CallStack.h>
+   extern "C" void dumping_callstack();
+ 
+   void dumping_callstack(){
+      android::CallStack stack;
+      stack.update();
+      stack.log(“dump_test“);
+   }
+  <2>.创建callstack.h
+      void dumping_callstack();
+  <3>.测试test.c
+      #include "callstack.h"
+ 
+      static ssize_t out_write(){
+        dumping_callstack();
+      }
+  <4>.Anroid.mk中添加到编译选项：callstack.cpp及库
+      LOCAL_SHARED_LIBRARIES := libcutils libutils
+      LOCAL_SRC_FILES := callstack.cpp
+ 
+4.Kernel中:
+#include <asm/ptrace.h>
+printk(KERN_ERR "dump_stack start: %s() %d \n",__FUNCTION__,__LINE__);  
+ 
+dump_stack();
+.......
+printk(KERN_ERR "dump_stack stop: %s() %d \n",__FUNCTION__,__LINE__);  
+根据dump stack的log位置加printk()。
+ 
+测试：
+# adb logcat | grep dump_test
